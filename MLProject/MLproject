@@ -1,6 +1,4 @@
-name: Titanic Project
-
-conda_env: conda.yaml
+name: TitanicProject
 
 entry_points:
   main:
