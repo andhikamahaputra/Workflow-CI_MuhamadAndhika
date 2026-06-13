@@ -12,34 +12,38 @@ from sklearn.metrics import (
     f1_score
 )
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
-print("Tracking URI:", mlflow.get_tracking_uri())
+# Experiment
 mlflow.set_experiment("Titanic_Experiment")
+
+# Autolog
 mlflow.sklearn.autolog()
 
 
 def train_model():
 
-    BASE_DIR = os.path.dirname(
+    base_dir = os.path.dirname(
         os.path.abspath(__file__)
     )
 
-    DATASET_PATH = os.path.join(
-        BASE_DIR,
+    dataset_path = os.path.join(
+        base_dir,
         "cleaned_dataset.csv"
     )
 
     print("Dataset ditemukan di:")
-    print(DATASET_PATH)
+    print(dataset_path)
 
-    df = pd.read_csv(DATASET_PATH)
+    # Load dataset
+    df = pd.read_csv(dataset_path)
 
     print("\nShape Dataset:")
     print(df.shape)
 
+    # Feature dan target
     X = df.drop("Survived", axis=1)
     y = df["Survived"]
 
+    # Split dataset
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -48,13 +52,16 @@ def train_model():
         stratify=y
     )
 
+    # Model
     model = RandomForestClassifier(
         n_estimators=100,
         random_state=42
     )
 
+    # Training
     model.fit(X_train, y_train)
 
+    # Evaluasi
     y_pred = model.predict(X_test)
 
     accuracy = accuracy_score(y_test, y_pred)
@@ -68,32 +75,8 @@ def train_model():
     print(f"Recall   : {recall:.4f}")
     print(f"F1 Score : {f1:.4f}")
 
-    mlflow.log_metric(
-        "accuracy_manual",
-        accuracy
-    )
-
-    mlflow.log_metric(
-        "precision_manual",
-        precision
-    )
-
-    mlflow.log_metric(
-        "recall_manual",
-        recall
-    )
-
-    mlflow.log_metric(
-        "f1_manual",
-        f1
-    )
-
-    mlflow.sklearn.log_model(
-        sk_model=model,
-        artifact_path="model"
-    )
-
-    print("\nModel berhasil tersimpan ke MLflow")
+    print("\nTraining selesai.")
+    print("MLflow Autolog berhasil mencatat parameter, metric, model, dan artifact.")
 
 
 if __name__ == "__main__":
