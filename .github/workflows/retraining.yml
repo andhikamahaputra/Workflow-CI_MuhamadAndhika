@@ -1,29 +1,28 @@
 name: retraining
 
 on:
-push:
-branches:
-- main
+  push:
+    branches:
+      - main
 
 jobs:
-retrain:
-runs-on: ubuntu-latest
+  retrain:
+    runs-on: ubuntu-latest
 
-steps:
-  - name: Checkout
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  - name: Setup Python
-    uses: actions/setup-python@v5
-    with:
-      python-version: "3.11"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-  - name: Install MLflow
-    run: |
-      pip install mlflow
+      - name: Install Dependencies
+        run: |
+          pip install mlflow pandas scikit-learn
 
-  - name: Run MLProject
-    run: |
-      cd MLProject
-      mlflow run .
-
+      - name: Run MLProject
+        run: |
+          cd MLProject
+          mlflow run .
